@@ -1,8 +1,11 @@
 pipeline{
-    
+
     agent any
-  
-    
+   environment {
+        NEXUS_CREDS = credentials('nexusCredentialsId')
+        NEXUS_DOCKER_REPO = '51.89.164.254:8090'
+    }
+
     stages {
         stage("Clear Repos"){
             steps{
@@ -24,18 +27,27 @@ pipeline{
                       sh "docker build -t dart-ui-image-dev ."
                       sh "docker images"
                  }
-               
+
             }
         }
-        
-        stage('Push Image to Nexus') {
-                steps {
-                      script {
-                          docker.withRegistry('http://51.89.164.254:8090/', 'nexusCredentialsId') {
-                                docker.image('dart-ui-image-dev').push()
-                           }
+
+      stage('Docker Login') {
+            steps {
+                echo 'Nexus Docker Repository Login'
+                script{
+                    withCredentials([usernamePassword(credentialsId: 'nexusCredentialsId', usernameVariable: 'USER', passwordVariable: 'PASS' )]){
+                       sh ' echo $PASS | docker login -u $USER --password-stdin $NEXUS_DOCKER_REPO'
                     }
-               } 
-          }
+
+                }
+            }
+        }
+
+      stage('Docker Push') {
+            steps {
+                echo 'Pushing Imgaet to docker hub'
+                sh 'docker push dart-ui-image-dev'
+            }
+        }
     }
 }
