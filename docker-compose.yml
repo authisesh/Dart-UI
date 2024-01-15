@@ -5,3 +5,4 @@ services:
     image: ${IMAGE_NAME}:${BUILD_NUMBER}
     ports:
       - "8088:80"
+    command: ["npm", "run", "dev", "--", "--host"]
