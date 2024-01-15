@@ -14,7 +14,7 @@ pipeline {
                 sh "pwd"
                 sh "rm -r -f Dart-UI"
                 sh "ls -lart"
-                sh "docker stop ${IMAGE_NAME}:${BUILD_NUMBER}"
+                sh "docker stop dart-ui-image-dev"
             }
         }
 
