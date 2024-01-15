@@ -14,12 +14,14 @@ pipeline {
                 sh "pwd"
                 sh "rm -r -f Dart-UI"
                 sh "ls -lart"
+                 script {
                 try{
                  sh "docker stop dart-ui-image-dev"
                 }catch  (Exception e) {
                       echo "Error: ${e.message}"
                     echo "No Image found"
                 }
+            }
             }
         }
 
