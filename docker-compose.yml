@@ -4,4 +4,4 @@ services:
   web:
     image: ${IMAGE_NAME}:${BUILD_NUMBER}
     ports:
-      - "8080:80"
+      - "8088:80"
