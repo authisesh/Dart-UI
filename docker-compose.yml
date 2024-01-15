@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  web:
+    image: ${IMAGE_NAME}:${BUILD_NUMBER}
+    ports:
+      - "8080:80"
