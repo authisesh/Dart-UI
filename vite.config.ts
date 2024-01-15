@@ -6,5 +6,6 @@ export default defineConfig({
   plugins: [react()],
    server: {
     port: 8088, // Change this to the desired port number
+    host: '0.0.0.0',
   },
 })
