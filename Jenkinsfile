@@ -16,7 +16,8 @@ pipeline {
                 sh "ls -lart"
                 try{
                  sh "docker stop dart-ui-image-dev"
-                }catch{
+                }catch  (Exception e) {
+                      echo "Error: ${e.message}"
                     echo "No Image found"
                 }
             }
