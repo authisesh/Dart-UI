@@ -110,7 +110,7 @@ const Login = () => {
                 <FormLabel>Username</FormLabel>
                 <OutlinedInput
                   type="text"
-                  placeholder="Enter your usernameqqq"
+                  placeholder="Enter your username"
                   id="userName"
                   value={userName}
                   onChange={handleUserName}
