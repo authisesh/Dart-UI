@@ -103,7 +103,7 @@ const Login = () => {
             </Stack>
             <Stack>
               <Typography variant="h5">Hello,</Typography>
-              <Typography variant="h5">Welcome back hiiii</Typography>
+              <Typography variant="h5">Welcome back</Typography>
             </Stack>
             <Stack gap={2}>
               <FormControl>
