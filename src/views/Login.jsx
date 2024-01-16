@@ -102,7 +102,7 @@ const Login = () => {
               )}
             </Stack>
             <Stack>
-              <Typography variant="h5">Hello, ESH</Typography>
+              <Typography variant="h5">ESH</Typography>
               <Typography variant="h5">Welcome back</Typography>
             </Stack>
             <Stack gap={2}>
