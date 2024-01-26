@@ -6,6 +6,8 @@ const LOGIN_URL = `${Config.VITE_API_URL}/v1/user/login`;
 export default function loginService(logDetails:{username: string,password: string}) {
 
   console.log(">>>>>>>>>>" + logDetails.username);
+  console.log(">>>>>>>>>>" + Config.VITE_API_URL);
+  console.log(">>>>>>>>>>" + LOGIN_URL);
   return axios({
     method: "POST",
     url: LOGIN_URL,
