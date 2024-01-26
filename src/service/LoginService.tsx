@@ -2,7 +2,7 @@ import axios from "axios";
 import { Config } from "../config";
 
 
-const LOGIN_URL = `${Config.VITE_API_URL}/v1/user/login`;
+const LOGIN_URL = `${import.meta.env.VITE_API_URL}/v1/user/login`;
 export default function loginService(logDetails:{username: string,password: string}) {
 
   console.log(">>>>>>>>>>" + logDetails.username);
