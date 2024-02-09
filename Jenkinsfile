@@ -85,7 +85,7 @@ stage('Docker Push') {
         steps {
             echo 'Executing Web UI Tests'
               
-                    build job: 'WebAutomation_SelPy_EshHome'
+                    build job: 'Automation_Web_UI_DART'
                
         }
     }
