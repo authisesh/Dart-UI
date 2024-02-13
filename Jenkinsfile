@@ -4,24 +4,26 @@ pipeline {
     environment {
         NEXUS_DOCKER_REPO = '51.89.164.254:8092/repository/docker_repo_esh/'
         IMAGE_NAME = 'dart-ui-image-dev'
-       // BUILD_NUMBER = '1' // Replace with the actual build number or variable
+        // Ensure BUILD_NUMBER is defined or replaced with an actual build number
+        // BUILD_NUMBER = '1'
         NEXUS_CREDS = 'nexusCredentialsId'
     }
 
     stages {
         stage("Clear Repos and images") {
             steps {
-                sh "pwd"
-                sh "rm -r -f Dart-UI"
-                sh "ls -lart"
-                 script {
-                try{
-                 sh "docker stop dart-ui-image-dev"
-                }catch  (Exception e) {
-                      echo "Error: ${e.message}"
-                    echo "No Image found"
+                // Add appropriate error handling
+                script {
+                    sh "pwd"
+                    sh "rm -r -f Dart-UI"
+                    sh "ls -lart"
+                    try {
+                        sh "docker stop dart-ui-image-dev"
+                    } catch (Exception e) {
+                        echo "Error: ${e.message}"
+                        echo "No Image found"
+                    }
                 }
-            }
             }
         }
 
@@ -53,54 +55,40 @@ pipeline {
             }
         }
 
-stage('Docker Push') {
-    steps {
-        echo 'Pushing Image to Nexus Docker Repository'
-        
-        sh "docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${NEXUS_DOCKER_REPO}${IMAGE_NAME}:${BUILD_NUMBER}"
-        sh "docker push ${NEXUS_DOCKER_REPO}${IMAGE_NAME}:${BUILD_NUMBER}"
-      // Update the docker-compose.yml file
-        // dir("/root/.jenkins/workspace/Dart_UI/Dart-UI") {
-        // sh "sed -i 's|image: ${IMAGE_NAME}:.*|image: ${NEXUS_DOCKER_REPO}${IMAGE_NAME}:${BUILD_NUMBER}|' docker-compose.yml"
-
-        // // Use Docker Compose to spin up the container
-        // sh "docker-compose up -d"
-        // }
-    }
-}
-
-    stage('Docker Spin') {
-        steps {
-            echo 'Spinning Docker-Compose'
-           // Update the docker-compose.yml file
-            dir("/root/.jenkins/workspace/Dart_UI/Dart-UI") {
-                 sh "sed -i 's|image: ${IMAGE_NAME}:.*|image: ${NEXUS_DOCKER_REPO}${IMAGE_NAME}:${BUILD_NUMBER}|' docker-compose.yml"
-                  // Use Docker Compose to spin up the container
-                 sh "docker-compose up -d"
+        stage('Docker Push') {
+            steps {
+                echo 'Pushing Image to Nexus Docker Repository'
+                sh "docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${NEXUS_DOCKER_REPO}${IMAGE_NAME}:${BUILD_NUMBER}"
+                sh "docker push ${NEXUS_DOCKER_REPO}${IMAGE_NAME}:${BUILD_NUMBER}"
             }
         }
-    }
 
- stage('Cypress Web UI Tests') {
-        steps {
-            echo 'Executing Web UI Tests'
-               script {
-                  docker.image("dart-cypress-image-dev:14").pull()
-                  docker.image("dart-cypress-image-dev:14").run("-p 8077:8077 -d")  
-               }
+        stage('Spin Docker Container') {
+            steps {
+                echo 'Spinning Docker Container'
+                dir("/root/.jenkins/workspace/Dart_UI/Dart-UI") {
+                    sh "sed -i 's|image: ${IMAGE_NAME}:.*|image: ${NEXUS_DOCKER_REPO}${IMAGE_NAME}:${BUILD_NUMBER}|' docker-compose.yml"
+                    sh "docker-compose up -d"
+                }
+            }
         }
-    }
- 
 
-    stage('Selinium Web UI Tests') {
-        steps {
-            echo 'Executing Web UI Tests'
-              
-                    build job: 'Automation_Web_UI_DART'
-               
+        stage('Cypress Web UI Tests') {
+            steps {
+                echo 'Executing Cypress Web UI Tests'
+                script {
+                    docker.image("dart-cypress-image-dev:14").pull()
+                    docker.image("dart-cypress-image-dev:14").run("-p 8077:8077 -d")  
+                }
+            }
         }
-    }
 
-
+        stage('Selinium Web UI Tests') {
+            steps {
+                echo 'Executing Selenium Web UI Tests'
+                // Ensure job name is correct
+                build job: 'Automation_Web_UI_DART'
+            }
+        }
     }
 }
