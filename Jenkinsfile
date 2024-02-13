@@ -79,9 +79,11 @@ pipeline {
                 script {
                      withCredentials([usernamePassword(credentialsId: NEXUS_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                         sh "echo \${PASS} | docker login -u \${USER} --password-stdin \${NEXUS_DOCKER_REPO}"
-                          docker.image("dart-cypress-image-dev:14").pull()
-                    docker.image("dart-cypress-image-dev:14").run("-p 8077:8077 -d")  
+                       sh "docker pull ${NEXUS_DOCKER_REPO}/dart-cypress-image-dev:14"
                     }
+
+                    // docker.image("dart-cypress-image-dev:14").pull()
+                    // docker.image("dart-cypress-image-dev:14").run("-p 8077:8077 -d") 
                    
                 }
             }
