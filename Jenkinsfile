@@ -80,13 +80,25 @@ pipeline {
                      withCredentials([usernamePassword(credentialsId: NEXUS_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                         sh "echo \${PASS} | docker login -u \${USER} --password-stdin \${NEXUS_DOCKER_REPO}"
                        sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:14"
-                         sh "docker run -d -p  8077:8077 dart-cypress-image-dev:14"
+                         sh "docker run -d -p  8077:8077 -v /home/eshci/esh_projects/cypressreport:/cypress/reports/html dart-cypress-image-dev:14"
                     }
 
                     // docker.image("dart-cypress-image-dev:14").pull()
                     // docker.image("dart-cypress-image-dev:14").run("-p 8077:8077 -d") 
                    
                 }
+            }
+        }
+
+            stage('Publish HTML Report') {
+            steps {
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: '/home/eshci/esh_projects/cypressreport', // Adjust this to the directory where your HTML report is stored
+                    reportFiles: 'index.html'    // Adjust this to the name of your HTML report file
+                ])
             }
         }
 
