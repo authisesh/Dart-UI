@@ -77,8 +77,12 @@ pipeline {
             steps {
                 echo 'Executing Cypress Web UI Tests'
                 script {
-                    docker.image("dart-cypress-image-dev:14").pull()
+                     withCredentials([usernamePassword(credentialsId: NEXUS_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                        sh "echo \${PASS} | docker login -u \${USER} --password-stdin \${NEXUS_DOCKER_REPO}"
+                          docker.image("dart-cypress-image-dev:14").pull()
                     docker.image("dart-cypress-image-dev:14").run("-p 8077:8077 -d")  
+                    }
+                   
                 }
             }
         }
