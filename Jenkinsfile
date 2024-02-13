@@ -81,7 +81,18 @@ stage('Docker Push') {
         }
     }
 
-    stage('Executing Web UI Tests') {
+ stage('Cypress Web UI Tests') {
+        steps {
+            echo 'Executing Web UI Tests'
+               script {
+                  docker.image("dart-cypress-image-dev:14").pull()
+                  docker.image("dart-cypress-image-dev:14").run("-p 8077:8077 -d")  
+               }
+        }
+    }
+ 
+
+    stage('Selinium Web UI Tests') {
         steps {
             echo 'Executing Web UI Tests'
               
