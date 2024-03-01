@@ -90,6 +90,20 @@ pipeline {
         //     }
         // }
 
+        stage('Cypress Web UI Tests') {
+    steps {
+        echo 'Executing Cypress Web UI Tests'
+        script {
+            withCredentials([usernamePassword(credentialsId: 'NEXUS_CREDS', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                sh "echo ${PASS} | docker login -u ${USER} --password-stdin ${NEXUS_DOCKER_REPO}"
+                sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:16"
+                sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/cypress/reports/html ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:16"
+            }
+        }
+    }
+}
+
+
         //     stage('Publish HTML Report') {
         //     steps {
         //         publishHTML(target: [
