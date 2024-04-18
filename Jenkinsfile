@@ -77,7 +77,7 @@ pipeline {
     steps {
         echo 'Executing Cypress Web UI Tests'
         script {
-            withCredentials([usernamePassword(credentialsId: 'NEXUS_CREDS', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+            withCredentials([usernamePassword(credentialsId: NEXUS_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                 sh "echo ${PASS} | docker login -u ${USER} --password-stdin ${NEXUS_DOCKER_REPO}"
                 sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:16"
                 sh "docker run --rm -it  ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:16"
