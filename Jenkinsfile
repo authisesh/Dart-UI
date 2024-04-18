@@ -11,6 +11,12 @@ pipeline {
      }
 
     stages {
+
+    stage('Print JAVA_HOME') {
+        steps {
+            sh 'echo $JAVA_HOME'
+        }
+    }
         stage("Clear Repos and images") {
             steps {
                 // Add appropriate error handling
