@@ -73,24 +73,7 @@ pipeline {
             }
         }
 
-        // stage('Cypress Web UI Tests') {
-        //     steps {
-        //         echo 'Executing Cypress Web UI Tests'
-        //         script {
-        //              withCredentials([usernamePassword(credentialsId: NEXUS_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-        //                 sh "echo \${PASS} | docker login -u \${USER} --password-stdin \${NEXUS_DOCKER_REPO}"
-        //                sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:16"
-        //                  sh "docker run -p  8077:8077 -v /home/eshci/esh_projects/cypressreport:/cypress/reports/html dart-cypress-image-dev:16"
-        //             }
-
-        //             // docker.image("dart-cypress-image-dev:14").pull()
-        //             // docker.image("dart-cypress-image-dev:14").run("-p 8077:8077 -d") 
-                   
-        //         }
-        //     }
-        // }
-
-        stage('Cypress Web UI Tests') {
+   stage('Cypress Web UI Tests') {
     steps {
         echo 'Executing Cypress Web UI Tests'
         script {
@@ -98,30 +81,18 @@ pipeline {
                 sh "echo ${PASS} | docker login -u ${USER} --password-stdin ${NEXUS_DOCKER_REPO}"
                 sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:16"
                 sh "docker run --rm -it  ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:16"
+                 sh "docker run --rm -it -v /home/eshci/esh_projects/cypressreport:/app/allure-results ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:16"
+                 sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/app/allure-results allure generate /app/allure-results -o /app/allure-report"
+
             }
         }
     }
+  }
 }
+    post {
+        always {
+            archiveArtifacts 'allure-report/**'
+        }
 
-
-        //     stage('Publish HTML Report') {
-        //     steps {
-        //         publishHTML(target: [
-        //             allowMissing: false,
-        //             alwaysLinkToLastBuild: true,
-        //             keepAll: true,
-        //             reportDir: '/home/eshci/esh_projects/cypressreport', // Adjust this to the directory where your HTML report is stored
-        //             reportFiles: 'index.html'    // Adjust this to the name of your HTML report file
-        //         ])
-        //     }
-        // }
-
-        // stage('Selinium Web UI Tests') {
-        //     steps {
-        //         echo 'Executing Selenium Web UI Tests'
-        //         // Ensure job name is correct
-        //         build job: 'Automation_Web_UI_DART'
-        //     }
-        // }
     }
 }
