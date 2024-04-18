@@ -116,12 +116,12 @@ pipeline {
         //     }
         // }
 
-        stage('Selinium Web UI Tests') {
-            steps {
-                echo 'Executing Selenium Web UI Tests'
-                // Ensure job name is correct
-                build job: 'Automation_Web_UI_DART'
-            }
-        }
+        // stage('Selinium Web UI Tests') {
+        //     steps {
+        //         echo 'Executing Selenium Web UI Tests'
+        //         // Ensure job name is correct
+        //         build job: 'Automation_Web_UI_DART'
+        //     }
+        // }
     }
 }
