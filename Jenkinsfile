@@ -91,6 +91,16 @@ pipeline {
                  sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
                 def dockerRunCommand = "docker run --rm -v /home/eshci/esh_projects/cypressreport:/cypress/allure-report ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24 &"
                 sh dockerRunCommand
+
+                def containerID = sh(script: dockerRunCommand, returnStdout: true).trim()
+
+                // Extracting the container ID from the output using regular expression
+                def matcher = (containerID =~ /([0-9a-f]{12})/)
+                if (matcher.find()) {
+                    containerID = matcher[0]
+                } else {
+                    error "Failed to extract the container ID"
+                }
                  echo "I am here 1 ."
                  timeout(time: 1, unit: 'MINUTES') {
                   echo "I am here 2 ."
@@ -99,8 +109,7 @@ pipeline {
                      echo "I am here 3 ."
                          // Check the console output for the specific message
 
-                         def containerID = sh(script: 'docker ps -q', returnStdout: true).trim()
-                          echo "containerID : $containerID"
+                           echo "containerID : $containerID"
                           if (containerID) {
                           def consoleOutput = sh(script: "docker logs --tail 100 ${containerID}", returnStdout: true).trim()
 
