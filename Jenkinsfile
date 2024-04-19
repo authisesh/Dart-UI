@@ -87,10 +87,12 @@ pipeline {
             withCredentials([usernamePassword(credentialsId: NEXUS_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                 sh "echo ${PASS} | docker login -u ${USER} --password-stdin ${NEXUS_DOCKER_REPO}"
                 sh "docker ps -q --filter ancestor=${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24 | xargs docker stop || true"
-                sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
-                sh "docker run -p 8083:43136 --rm ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24 &"
-               sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/app/allure-results ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
-               sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/app/allure-results allure generate /app/allure-results -o /app/allure-report"
+
+                 sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
+                sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/app/allure-results ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
+                sh "npm run report:allure"
+                // Open the Allure report specifying the host and port
+                sh "docker run --rm -p 8083:8080 -v /home/eshci/esh_projects/cypressreport:/app/allure-report allure open --host 0.0.0.0 --port 8083 /app/allure-report"
                // Add command to stop the container after 10 seconds
                sh "sleep 10 && docker stop \$(docker ps -q)"
 
