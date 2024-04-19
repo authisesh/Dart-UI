@@ -107,7 +107,7 @@ pipeline {
                          if (consoleOutput.contains("Press <Ctrl+C> to exit")) {
                              echo "Found the exit message. Stopping the Docker container."
                              // Extract the container ID
-                             def containerID = consoleOutput.substring(consoleOutput.lastIndexOf(" "), consoleOutput.lastIndexOf("."))
+                           //  def containerID = consoleOutput.substring(consoleOutput.lastIndexOf(" "), consoleOutput.lastIndexOf("."))
                              // Stop the Docker container
                              sh "docker stop ${containerID}"
                              break
