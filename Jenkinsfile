@@ -91,9 +91,12 @@ pipeline {
                  sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
                 def dockerRunCommand = "docker run --rm -v /home/eshci/esh_projects/cypressreport:/cypress/allure-report ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24 &"
                 sh dockerRunCommand
+                 echo "I am here 1 ."
                  timeout(time: 1, unit: 'MINUTES') {
+                  echo "I am here 2 ."
                      // Loop to continuously check the console output
                      while (true) {
+                     echo "I am here 4 ."
                          // Check the console output for the specific message
                          def consoleOutput = sh(script: 'docker logs --tail 100 $(docker ps -q)', returnStdout: true).trim()
                          if (consoleOutput.contains("Press <Ctrl+C> to exit")) {
@@ -104,6 +107,7 @@ pipeline {
                              sh "docker stop ${containerID}"
                              break
                          } else {
+                           echo "I am here 5 ."
                              echo "Exit message not found. Waiting for the message to appear..."
                              sleep 10 // Adjust the sleep time as needed
                          }
@@ -117,10 +121,5 @@ pipeline {
     }
   }
 }
-    post {
-        always {
-            archiveArtifacts 'allure-report/**'
-        }
 
-    }
 }
