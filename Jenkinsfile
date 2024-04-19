@@ -129,7 +129,7 @@ pipeline {
 
       stage('View Allure Report') {
           steps {
-              sh 'http://51.89.164.254:3000/#'
+              echo 'http://51.89.164.254:3000/#'
           }
       }
 
