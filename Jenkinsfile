@@ -12,11 +12,7 @@ pipeline {
 
     stages {
 
-    stage('Print JAVA_HOME') {
-        steps {
-            sh 'echo $JAVA_HOME'
-        }
-    }
+
         stage("Clear Repos and images") {
             steps {
                 // Add appropriate error handling
@@ -110,9 +106,6 @@ pipeline {
 
                          if (consoleOutput.contains("Press <Ctrl+C> to exit")) {
                              echo "Found the exit message. Stopping the Docker container."
-                             // Extract the container ID
-                           //  def containerID = consoleOutput.substring(consoleOutput.lastIndexOf(" "), consoleOutput.lastIndexOf("."))
-                             // Stop the Docker container
                              sh "docker stop ${containerID}"
                              break
                          } else {
@@ -133,6 +126,13 @@ pipeline {
         }
     }
   }
+
+      stage('View Allure Report') {
+          steps {
+              sh 'http://51.89.164.254:3000/#'
+          }
+      }
+
 }
 
 }
