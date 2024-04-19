@@ -96,9 +96,14 @@ pipeline {
                   echo "I am here 2 ."
                      // Loop to continuously check the console output
                      while (true) {
-                     echo "I am here 4 ."
+                     echo "I am here 3 ."
                          // Check the console output for the specific message
-                         def consoleOutput = sh(script: 'docker logs --tail 100 $(docker ps -q)', returnStdout: true).trim()
+
+                         def containerID = sh(script: 'docker ps -q', returnStdout: true).trim()
+                          echo "containerID : $containerID"
+                          if (containerID) {
+                          def consoleOutput = sh(script: "docker logs --tail 100 ${containerID}", returnStdout: true).trim()
+
                          if (consoleOutput.contains("Press <Ctrl+C> to exit")) {
                              echo "Found the exit message. Stopping the Docker container."
                              // Extract the container ID
@@ -107,9 +112,13 @@ pipeline {
                              sh "docker stop ${containerID}"
                              break
                          } else {
-                           echo "I am here 5 ."
+                           echo "I am here 4 ."
                              echo "Exit message not found. Waiting for the message to appear..."
                              sleep 10 // Adjust the sleep time as needed
+                         }
+                         }else{
+                             echo "No running container found."
+                              break
                          }
                      }
                  }
