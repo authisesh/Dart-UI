@@ -99,7 +99,7 @@ pipeline {
                 if (matcher.find()) {
                     containerID = matcher[0]
                 } else {
-                    error "Failed to extract the container ID"
+                    error "Failed to extract the container ID from the output:\n${containerID}"
                 }
                  echo "I am here 1 ."
                  timeout(time: 1, unit: 'MINUTES') {
