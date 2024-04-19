@@ -90,11 +90,8 @@ pipeline {
 
                  sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
                 sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/cypress/allure-report ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
-
-                // Open the Allure report specifying the host and port
-                sh "docker run --rm -p 8083:8080 -v /home/eshci/esh_projects/cypressreport:/cypress/allure-report allure open --host 0.0.0.0 --port 8083 /cypress/allure-report"
-               // Add command to stop the container after 10 seconds
-               sh "sleep 10 && docker stop \$(docker ps -q)"
+                // Add command to stop the container after 10 seconds
+               sh "sleep 20 && docker stop \$(docker ps -q)"
 
             }
         }
