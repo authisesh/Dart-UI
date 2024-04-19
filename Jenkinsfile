@@ -84,14 +84,16 @@ pipeline {
     steps {
         echo 'Executing Cypress Web UI Tests'
         script {
-            withCredentials([usernamePassword(credentialsId: NEXUS_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                sh "echo ${PASS} | docker login -u ${USER} --password-stdin ${NEXUS_DOCKER_REPO}"
-                sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
-                sh "docker run --rm ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
-                 sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/app/allure-results ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
-                 sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/app/allure-results allure generate /app/allure-results -o /app/allure-report"
-
-            }
+           withCredentials([usernamePassword(credentialsId: NEXUS_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                          sh "echo ${PASS} | docker login -u ${USER} --password-stdin ${NEXUS_DOCKER_REPO}"
+                          sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
+                          sh "docker run -p 8083:43136 --rm ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24 &"
+                          sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/app/allure-results ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
+                          sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/app/allure-results allure generate /app/allure-results -o /app/allure-report"
+                          // Add command to stop the container after 10 seconds
+                          sh "sleep 10 && docker stop \$(docker ps -q)"
+                      }
+                  }
         }
     }
   }
