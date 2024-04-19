@@ -89,9 +89,27 @@ pipeline {
                 sh "docker ps -q --filter ancestor=${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24 | xargs docker stop || true"
 
                  sh "docker pull ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24"
-                sh "docker run --rm -v /home/eshci/esh_projects/cypressreport:/cypress/allure-report ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24 &"
-                // Add command to stop the container after 10 seconds
-                sh "sleep 20 && docker stop \$(docker ps -q --filter ancestor=${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24)  || true"
+                def dockerRunCommand = "docker run --rm -v /home/eshci/esh_projects/cypressreport:/cypress/allure-report ${NEXUS_DOCKER_REPO}dart-cypress-image-dev:24 &"
+                sh dockerRunCommand
+                 timeout(time: 1, unit: 'MINUTES') {
+                     // Loop to continuously check the console output
+                     while (true) {
+                         // Check the console output for the specific message
+                         def consoleOutput = sh(script: 'docker logs --tail 100 $(docker ps -q)', returnStdout: true).trim()
+                         if (consoleOutput.contains("Press <Ctrl+C> to exit")) {
+                             echo "Found the exit message. Stopping the Docker container."
+                             // Extract the container ID
+                             def containerID = consoleOutput.substring(consoleOutput.lastIndexOf(" "), consoleOutput.lastIndexOf("."))
+                             // Stop the Docker container
+                             sh "docker stop ${containerID}"
+                             break
+                         } else {
+                             echo "Exit message not found. Waiting for the message to appear..."
+                             sleep 10 // Adjust the sleep time as needed
+                         }
+                     }
+                 }
+
 
 
             }
